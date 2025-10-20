@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Navigation Bar -->
+        <nav id="main-nav" class="main-nav hidden">
+            <div class="nav-container">
+                <div class="nav-logo">🧠 Quiz Master</div>
+                <div class="nav-links">
+                    <button class="nav-btn active" data-screen="home-screen">🏠 Home</button>
+                    <button class="nav-btn" data-screen="shop-screen">🛒 Shop</button>
+                    <button class="nav-btn" data-screen="avatar-screen">👤 Avatar</button>
+                    <button class="nav-btn" data-screen="custom-screen">📝 Custom Quizzes</button>
+                    <button class="nav-btn" data-screen="ai-pvp-screen">🤖 AI PvP</button>
+                    <button class="nav-btn" data-screen="achievements-screen">🏆 Achievements</button>
+                    <button class="nav-btn" data-screen="profile-screen">📊 Profile</button>
+                    <button class="nav-btn" data-screen="daily-screen">📅 Daily</button>
+                    <button class="nav-btn" data-screen="improvement-screen">📈 Improvement</button>
+                </div>
+                <div style="flex: 1; max-width: 400px; margin: 0 15px;">
+                    <input type="text" id="command-bar" placeholder="🔍 Type code or search..." style="width: 100%; padding: 8px 15px; border-radius: 20px; border: 2px solid rgba(255,255,255,0.3); 
+                                  background: rgba(0,0,0,0.3); font-size: 0.9rem; outline: none; color: #ffffff;"
+                        autocomplete="off">
+                </div>
+                <div class="nav-user">
+                    <span id="nav-points">💰 0</span>
+                    <span id="nav-coins" style="margin-left: 15px;">🪙 0</span>
+                    <span id="quiz-timer" class="hidden"
+                        style="margin-right: 10px; color: #ffd700; font-weight: bold;">⏱️ 0:00</span>
+                    <button id="nav-settings" class="nav-icon-btn" title="Settings">⚙️</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Account Screen -->
+        <div id="account-screen" class="screen active">
+            <div class="container">
+                <h1>🧠 Quiz Master</h1>
+                <p class="subtitle">Welcome! Please create an account or log in to continue.</p>
+
+                <div class="account-forms">
+                    <div class="form-container">
+                        <div class="form-tabs">
+                            <button class="form-tab active" data-tab="login">Log In</button>
+                            <button class="form-tab" data-tab="register">Register</button>
+                        </div>
+
+                        <div id="login-form" class="account-form active">
+                            <h3>Welcome Back!</h3>
+                            <input type="text" id="login-username" placeholder="Username" required minlength="3"
+                                maxlength="20">
+                            <input type="password" id="login-password" placeholder="Password" required minlength="6">
+                            <button id="login-btn" class="account-btn">Log In</button>
+                        </div>
+
+                        <div id="register-form" class="account-form">
+                            <h3>Create Account</h3>
+                            <input type="text" id="register-username" placeholder="Username (3-20 characters)" required
+                                minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+">
+                            <input type="email" id="register-email" placeholder="Email (e.g., user@example.com)"
+                                required>
+                            <input type="password" id="register-password" placeholder="Password (min 6 characters)"
+                                required minlength="6">
+                            <input type="password" id="register-confirm" placeholder="Confirm Password" required
+                                minlength="6">
+                            <button id="register-btn" class="account-btn">Create Account</button>
+                            <small class="form-hint">Username: letters, numbers, and underscores only</small>
+                        </div>
+                    </div>
+
+                    <div class="skip-section">
+                        <button id="skip-account-btn" class="skip-btn">
+                            <span class="icon">⏭️</span>
+                            <span>Skip & Play as Guest</span>
+                        </button>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="dont-show-again">
+                            <span class="checkmark"></span>
+                            Don't show this again
+                        </label>
+                        <button id="clear-all-data-btn" class="clear-data-btn">
+                            <span class="icon">🗑️</span>
+                            <span>Clear All Data & Accounts</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Screen -->
+        <div id="home-screen" class="screen">
+            <div class="container" style="max-width: 1200px;">
+                <h1>🧠 Quiz Master</h1>
+                <p class="subtitle">Test your knowledge across multiple subjects!</p>
+
+                <!-- Difficulty Selection -->
+                <div class="difficulty-section">
+                    <h3>Choose Difficulty</h3>
+                    <div class="difficulty-grid">
+                        <button class="difficulty-btn active" data-mode="easy">
+                            <span class="icon">😊</span>
+                            <span>Easy</span>
+                            <small>Easy questions only</small>
+                        </button>
+                        <button class="difficulty-btn" data-mode="medium">
+                            <span class="icon">😐</span>
+                            <span>Medium</span>
+                            <small>Easy → Medium</small>
+                        </button>
+                        <button class="difficulty-btn" data-mode="hard">
+                            <span class="icon">😤</span>
+                            <span>Hard</span>
+                            <small>All difficulties</small>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Count Selection -->
+                <div class="question-count-section">
+                    <h3>Choose Quiz Length</h3>
+                    <div class="question-count-grid">
+                        <button class="question-count-btn active" data-count="20">
+                            <span class="icon">⚡</span>
+                            <span>Quick</span>
+                            <small>20 questions</small>
+                        </button>
+                        <button class="question-count-btn" data-count="30">
+                            <span class="icon">🎯</span>
+                            <span>Standard</span>
+                            <small>30 questions</small>
+                        </button>
+                        <button class="question-count-btn" data-count="40">
+                            <span class="icon">🔥</span>
+                            <span>Extended</span>
+                            <small>40 questions</small>
+                        </button>
+                        <button class="question-count-btn" data-count="50">
+                            <span class="icon">💪</span>
+                            <span>Challenge</span>
+                            <small>50 questions</small>
+                        </button>
+                        <button class="question-count-btn" data-count="60">
+                            <span class="icon">🏆</span>
+                            <span>Expert</span>
+                            <small>60 questions</small>
+                        </button>
+                        <button class="question-count-btn" data-count="100">
+                            <span class="icon">🚀</span>
+                            <span>Marathon</span>
+                            <small>100 questions</small>
+                        </button>
+                        <button class="question-count-btn" data-count="120">
+                            <span class="icon">💀</span>
+                            <span>Impossible</span>
+                            <small>120 questions</small>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Subject Selection -->
+                <div class="subject-section">
+                    <h3>Choose Subject</h3>
+                    <div class="subject-grid">
+                        <button class="subject-btn" data-subject="math">
+                            <span class="icon">📊</span>
+                            <span>Math</span>
+                        </button>
+                        <button class="subject-btn" data-subject="physics">
+                            <span class="icon">⚛️</span>
+                            <span>Physics</span>
+                        </button>
+                        <button class="subject-btn" data-subject="chemistry">
+                            <span class="icon">🧪</span>
+                            <span>Chemistry</span>
+                        </button>
+                        <button class="subject-btn" data-subject="coding">
+                            <span class="icon">💻</span>
+                            <span>Coding</span>
+                        </button>
+                        <button class="subject-btn" data-subject="biology">
+                            <span class="icon">🧬</span>
+                            <span>Biology</span>
+                        </button>
+                        <button class="subject-btn" data-subject="history">
+                            <span class="icon">📚</span>
+                            <span>History</span>
+                        </button>
+                        <button class="subject-btn" data-subject="trivia">
+                            <span class="icon">🎯</span>
+                            <span>Trivia</span>
+                        </button>
+                        <button class="subject-btn all-subjects" data-subject="all">
+                            <span class="icon">🌟</span>
+                            <span>All Subjects</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Special Game Modes -->
+                <div class="game-modes-section" style="margin-top: 40px;">
+                    <h3 style="text-align: center; margin-bottom: 20px;">🎮 Special Modes</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
+                        <button id="survival-mode-btn" class="special-mode-btn"
+                            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border: none; border-radius: 15px; color: white; cursor: pointer; font-weight: bold; transition: transform 0.2s;">
+                            <div style="font-size: 2rem;">🏃‍♂️</div>
+                            <div>Survival Mode</div>
+                            <small style="opacity: 0.9;">Endless questions, increasing difficulty</small>
+                        </button>
+                        <button id="lightning-mode-btn" class="special-mode-btn"
+                            style="background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%); padding: 20px; border: none; border-radius: 15px; color: white; cursor: pointer; font-weight: bold; transition: transform 0.2s;">
+                            <div style="font-size: 2rem;">⚡</div>
+                            <div>Lightning Round</div>
+                            <small style="opacity: 0.9;">60 seconds, rapid fire!</small>
+                        </button>
+                        <button id="sudden-death-btn" class="special-mode-btn"
+                            style="background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%); padding: 20px; border: none; border-radius: 15px; color: white; cursor: pointer; font-weight: bold; transition: transform 0.2s;">
+                            <div style="font-size: 2rem;">💀</div>
+                            <div>Sudden Death</div>
+                            <small style="opacity: 0.9;">1 life, hard questions only</small>
+                        </button>
+                        <button id="boss-rush-btn" class="special-mode-btn"
+                            style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); padding: 20px; border: none; border-radius: 15px; color: #333; cursor: pointer; font-weight: bold; transition: transform 0.2s;">
+                            <div style="font-size: 2rem;">👑</div>
+                            <div>Boss Rush</div>
+                            <small style="opacity: 0.9;">Fight all 8 bosses!</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Screen (moved from home) -->
+
+    <!-- Shop Screen -->
+    <div id="shop-screen" class="screen">
+        <div class="container">
+            <h1>🛒 Item Shop</h1>
+            <p class="subtitle">Purchase cosmetic items and power-ups with your points!</p>
+
+            <div class="shop-categories">
+                <button class="shop-category-btn active" data-category="powerups">⚡ Power-ups</button>
+                <button class="shop-category-btn" data-category="currency">🪙 Coins</button>
+                <button class="shop-category-btn" data-category="faces">😊 Faces</button>
+                <button class="shop-category-btn" data-category="hair">💇 Hair</button>
+                <button class="shop-category-btn" data-category="hats">🎩 Hats</button>
+                <button class="shop-category-btn" data-category="vests">👔 Vests</button>
+                <button class="shop-category-btn" data-category="pants">👖 Pants</button>
+                <button class="shop-category-btn" data-category="shoes">👟 Shoes</button>
+                <button class="shop-category-btn" data-category="accessories">👓 Accessories</button>
+            </div>
+
+            <div id="shop-items" class="shop-grid">
+                <!-- Items will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Avatar Customization Screen -->
+    <div id="avatar-screen" class="screen">
+        <div class="container">
+            <h1>👤 Avatar Customization</h1>
+            <p class="subtitle">Build your unique character!</p>
+
+            <div class="avatar-layout" style="display: flex; gap: 20px;">
+                <!-- Avatar Progression Sidebar -->
+                <div class="avatar-progression"
+                    style="flex: 0 0 250px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; max-height: 600px; overflow-y: auto;">
+                    <h3 style="margin-bottom: 15px; text-align: center;">🏆 Avatar Progression</h3>
+                    <div id="avatar-progression-list">
+                        <!-- Will be populated by JS -->
+                    </div>
+                </div>
+
+                <div style="flex: 1;">
+                    <div class="avatar-preview-section">
+                        <div class="avatar-preview">
+                            <div id="avatar-display" class="avatar-character">
+                                <!-- Hair -->
+                                <div id="avatar-hair" class="avatar-hair"></div>
+                                <!-- Face -->
+                                <div id="avatar-face" class="avatar-face">😊</div>
+                                <!-- Hat/Head Items -->
+                                <div id="avatar-hat" class="avatar-hat"></div>
+                                <!-- Body/Vest -->
+                                <div id="avatar-vest" class="avatar-vest"></div>
+                                <!-- Accessories -->
+                                <div id="avatar-accessory" class="avatar-accessory"></div>
+                                <!-- Pants -->
+                                <div id="avatar-pants" class="avatar-pants"></div>
+                                <!-- Shoes -->
+                                <div id="avatar-shoes" class="avatar-shoes"></div>
+                            </div>
+                        </div>
+                        <div class="avatar-level-display">
+                            <div class="level-badge">
+                                <span class="level-icon">⭐</span>
+                                <span id="avatar-level-text">Level 1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="avatar-inventory">
+                        <h3>Your Items</h3>
+                        <div class="inventory-tabs">
+                            <button class="inventory-tab active" data-tab="faces">😊 Faces</button>
+                            <button class="inventory-tab" data-tab="hair">💇 Hair</button>
+                            <button class="inventory-tab" data-tab="hats">🎩 Hats</button>
+                            <button class="inventory-tab" data-tab="vests">👔 Tops</button>
+                            <button class="inventory-tab" data-tab="pants">👖 Pants</button>
+                            <button class="inventory-tab" data-tab="shoes">👟 Shoes</button>
+                            <button class="inventory-tab" data-tab="accessories">👓 Accessories</button>
+                        </div>
+                        <div id="inventory-items" class="inventory-grid">
+                            <!-- Inventory items will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Quizzes Screen -->
+    <div id="custom-screen" class="screen">
+        <div class="container">
+            <h1>📝 Custom Quizzes</h1>
+            <p class="subtitle">Upload, create, and play your own quiz questions!</p>
+
+            <!-- Uploaded Quizzes Section -->
+            <div class="uploaded-quizzes-section">
+                <h3>📚 Your Quiz Collections</h3>
+                <div id="uploaded-quizzes-grid" class="uploaded-quizzes-grid">
+                    <!-- Quiz collections will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Upload Quiz Section -->
+            <div class="upload-quiz-section">
+                <h3>📤 Upload Quiz File</h3>
+                <div class="upload-area">
+                    <input type="file" id="quiz-upload-input" accept=".json,.txt" style="display: none;" />
+                    <button id="upload-quiz-btn" class="btn-upload">
+                        📁 Choose File
+                    </button>
+                    <p class="upload-hint">Upload JSON or TXT file with quiz questions</p>
+                </div>
+            </div>
+
+            <!-- Create Questions Section -->
+            <div class="create-questions-section">
+                <h3>✏️ Create Questions Manually</h3>
+                <div class="custom-quiz-layout">
+                    <div class="custom-quiz-creator">
+                        <input type="text" id="custom-question" placeholder="Enter your question" />
+                        <input type="text" id="custom-answer1" placeholder="Answer 1" />
+                        <input type="text" id="custom-answer2" placeholder="Answer 2" />
+                        <input type="text" id="custom-answer3" placeholder="Answer 3" />
+                        <input type="text" id="custom-answer4" placeholder="Answer 4" />
+                        <select id="custom-correct">
+                            <option value="0">Answer 1 is correct</option>
+                            <option value="1">Answer 2 is correct</option>
+                            <option value="2">Answer 3 is correct</option>
+                            <option value="3">Answer 4 is correct</option>
+                        </select>
+                        <button id="add-custom-question" class="btn-primary">Add Question</button>
+                    </div>
+
+                    <div class="custom-quiz-list">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h4 style="margin: 0; color: white;">Preview Questions</h4>
+                        </div>
+                        <div id="custom-questions-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI PvP Screen -->
+    <div id="ai-pvp-screen" class="screen">
+        <div class="container">
+            <h1>🤖 AI Battle Arena</h1>
+            <p class="subtitle">Challenge AI opponents and earn exclusive rewards!</p>
+
+            <!-- Battle Rules Section -->
+            <div class="battle-rules-section">
+                <h3>⚔️ Battle Rules</h3>
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <div class="rule-icon">❤️</div>
+                        <h4>Lives System</h4>
+                        <p>Both you and the AI start with 3 lives. Wrong answers cost 1 life.</p>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-icon">🎯</div>
+                        <h4>Victory Condition</h4>
+                        <p>Reduce AI lives to 0 AND answer at least as many questions as the AI.</p>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-icon">💻</div>
+                        <h4>Hacker Special</h4>
+                        <p>Speed race! Complete questions faster than AI (2 sec/question).</p>
+                    </div>
+                    <div class="rule-card">
+                        <div class="rule-icon">💰</div>
+                        <h4>Rewards</h4>
+                        <p>Earn points based on score × AI accuracy. Hacker gives 100× bonus!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Opponents Grid -->
+            <div class="ai-opponents-section">
+                <h3>🤖 Choose Your Opponent</h3>
+                <div class="ai-opponents-grid">
+                    <!-- AI opponents will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievements Screen -->
+    <div id="achievements-screen" class="screen">
+        <div class="container">
+            <h1>🏆 Achievements</h1>
+            <p class="subtitle">Track your progress and showcase your best achievements!</p>
+
+            <div class="achievements-layout">
+                <div class="achievements-showcase">
+                    <h3>Featured Achievements (Select up to 5)</h3>
+                    <div id="featured-achievements" class="featured-grid">
+                        <div class="featured-slot empty">Empty Slot</div>
+                        <div class="featured-slot empty">Empty Slot</div>
+                        <div class="featured-slot empty">Empty Slot</div>
+                        <div class="featured-slot empty">Empty Slot</div>
+                        <div class="featured-slot empty">Empty Slot</div>
+                    </div>
+                </div>
+
+                <div class="achievements-list">
+                    <h3>All Achievements</h3>
+                    <div id="all-achievements" class="achievements-grid">
+                        <!-- Achievements will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profile-screen" class="screen">
+        <div class="container">
+            <h1>📊 Player Profile</h1>
+
+            <div class="profile-layout">
+                <div class="profile-header">
+                    <div id="profile-avatar" class="profile-avatar-display">
+                        <!-- Avatar preview -->
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profile-username">Player</h2>
+                        <p id="profile-rank">Rank: Beginner</p>
+                        <p id="profile-points">💰 Points: 0</p>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <h3>Statistics</h3>
+                    <div id="profile-stats-grid" class="stats-grid">
+                        <!-- Stats will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Challenges Screen -->
+    <div id="daily-screen" class="screen">
+        <div class="container">
+            <h1>� Daily Chalmlenges</h1>
+            <p class="subtitle">Complete daily, weekly, and monthly challenges!</p>
+
+            <!-- Challenge Types -->
+            <div class="challenge-types-grid">
+                <!-- Daily Challenge -->
+                <div class="challenge-type-card">
+                    <div class="challenge-icon">📅</div>
+                    <h3>Daily Challenge</h3>
+                    <p>1 question from today</p>
+                    <div id="daily-status" class="challenge-status"></div>
+                    <button id="start-daily" class="challenge-btn">Start Daily</button>
+                </div>
+
+                <!-- 10-Day Challenge -->
+                <div class="challenge-type-card">
+                    <div class="challenge-icon">🔟</div>
+                    <h3>10-Day Challenge</h3>
+                    <p>10 questions from last 10 days</p>
+                    <div id="ten-day-status" class="challenge-status"></div>
+                    <button id="start-ten-day" class="challenge-btn">Start 10-Day</button>
+                    <div class="challenge-reward">🏆 Reward: 500 points</div>
+                </div>
+
+                <!-- 20-Day Challenge -->
+                <div class="challenge-type-card">
+                    <div class="challenge-icon">2️⃣0️⃣</div>
+                    <h3>20-Day Challenge</h3>
+                    <p>20 questions from last 20 days</p>
+                    <div id="twenty-day-status" class="challenge-status"></div>
+                    <button id="start-twenty-day" class="challenge-btn">Start 20-Day</button>
+                    <div class="challenge-reward">🏆 Reward: 1,200 points</div>
+                </div>
+
+                <!-- Monthly Challenge -->
+                <div class="challenge-type-card">
+                    <div class="challenge-icon">📆</div>
+                    <h3>Monthly Challenge</h3>
+                    <p>30 questions from last 30 days</p>
+                    <div id="monthly-status" class="challenge-status"></div>
+                    <button id="start-monthly" class="challenge-btn">Start Monthly</button>
+                    <div class="challenge-reward">🏆 Reward: 3,000 points + Special Item</div>
+                </div>
+            </div>
+
+            <!-- Challenge History -->
+            <div class="challenge-history-section">
+                <h3>📊 Your Challenge History</h3>
+                <div id="challenge-history-grid" class="challenge-history-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Improvement Screen -->
+    <div id="improvement-screen" class="screen">
+        <div class="container">
+            <h1>📈 Areas of Improvement</h1>
+            <p class="subtitle">Analyze your performance and focus on weak areas!</p>
+
+            <div id="improvement-analysis" class="improvement-grid">
+                <!-- Analysis will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="screen">
+        <div class="container">
+            <!-- Battle Mode Indicator -->
+            <div id="battle-mode-indicator" class="battle-mode-indicator hidden">
+                <h2>🤖 AI Battle Mode</h2>
+                <p id="ai-opponent-name">vs Easy Bot</p>
+            </div>
+
+            <!-- Split Screen Container -->
+            <div id="quiz-container" class="quiz-container">
+                <!-- Player Side -->
+                <div class="player-side">
+                    <div class="side-header">
+                        <h3>👤 You</h3>
+                    </div>
+                    <div class="quiz-header">
+                        <div class="lives">
+                            <span>Lives: </span>
+                            <span id="lives-display">❤️❤️❤️</span>
+                        </div>
+                        <div class="score">
+                            <span>Score: </span>
+                            <span id="score-display">0</span>
+                        </div>
+                        <div class="progress">
+                            <span>Progress: </span>
+                            <span id="progress-display">0/20</span>
+                        </div>
+                        <div class="combo">
+                            <span>Combo: </span>
+                            <span id="combo-display">0x</span>
+                        </div>
+                        <div class="multiplier"
+                            style="display: none; color: #ffd700; font-weight: bold; font-size: 1.2rem;">
+                            <span id="multiplier-display"></span>
+                        </div>
+                        <div class="difficulty">
+                            <span>Level: </span>
+                            <span id="difficulty-display">1</span>
+                        </div>
+                    </div>
+
+                    <!-- Power-ups Bar -->
+                    <div class="powerups-bar">
+                        <button class="powerup-btn" id="powerup-5050" title="50/50: Remove 2 wrong answers">
+                            <span class="powerup-icon">🎯</span>
+                            <span class="powerup-count" id="count-5050">3</span>
+                        </button>
+                        <button class="powerup-btn" id="powerup-skip" title="Skip Question">
+                            <span class="powerup-icon">⏭️</span>
+                            <span class="powerup-count" id="count-skip">2</span>
+                        </button>
+                        <button class="powerup-btn" id="powerup-life" title="Extra Life">
+                            <span class="powerup-icon">❤️</span>
+                            <span class="powerup-count" id="count-life">1</span>
+                        </button>
+                        <button class="powerup-btn" id="powerup-time" title="Freeze Time (5 seconds)">
+                            <span class="powerup-icon">⏰</span>
+                            <span class="powerup-count" id="count-time">2</span>
+                        </button>
+                    </div>
+
+                    <div class="question-container">
+                        <div id="curveball-alert" class="curveball-alert hidden">
+                            🎯 CURVEBALL QUESTION! Worth 3 lives!
+                        </div>
+                        <h2 id="question-text">Question will appear here</h2>
+                        <div id="answers-container" class="answers-grid">
+                            <!-- Answer buttons will be generated here -->
+                        </div>
+                    </div>
+
+                    <div id="feedback" class="feedback hidden">
+                        <p id="feedback-text"></p>
+                        <button id="next-btn" class="next-button">Next Question</button>
+                    </div>
+                </div>
+
+                <!-- AI Side -->
+                <div class="ai-side hidden">
+                    <div class="side-header">
+                        <h3 id="ai-name">🤖 AI Bot</h3>
+                    </div>
+                    <div class="quiz-header">
+                        <div class="lives">
+                            <span>Lives: </span>
+                            <span id="ai-lives-display">❤️❤️❤️</span>
+                        </div>
+                        <div class="score">
+                            <span>Score: </span>
+                            <span id="ai-score-display">0</span>
+                        </div>
+                        <div class="progress">
+                            <span>Progress: </span>
+                            <span id="ai-progress-display">0/20</span>
+                        </div>
+                    </div>
+
+                    <div class="ai-question-container">
+                        <div class="blur-overlay">
+                            <div class="blur-message">
+                                <span class="blur-icon">🔒</span>
+                                <p>AI's questions are hidden</p>
+                                <small>Focus on your own quiz!</small>
+                            </div>
+                        </div>
+                        <div class="ai-thinking">
+                            <div class="thinking-indicator">🤔 Thinking...</div>
+                        </div>
+                        <h3 id="ai-question-text">AI is answering...</h3>
+                        <div id="ai-answers-container" class="answers-grid ai-answers">
+                            <!-- AI answer visualization -->
+                        </div>
+                        <div id="ai-feedback" class="ai-feedback">
+                            <p id="ai-feedback-text"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="screen">
+        <div class="container">
+            <h1 id="game-over-title">Game Over!</h1>
+            <div class="final-stats">
+                <p>Final Score: <span id="final-score">0</span></p>
+                <p>Questions Answered: <span id="questions-answered">0</span></p>
+                <p>Highest Level: <span id="highest-level">1</span></p>
+            </div>
+            <button id="play-again-btn" class="play-again-button">Play Again</button>
+            <button id="home-btn" class="home-button">Back to Home</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" id="close-settings">✖</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>📊 Account Stats</h3>
+                    <p>Account: <strong id="settings-account">Guest</strong></p>
+                    <p>Total Score: <strong id="settings-total-score">0</strong></p>
+                    <p>Quizzes Completed: <strong id="settings-quizzes">0</strong></p>
+                    <p>Achievements Unlocked: <strong id="settings-achievements">0</strong></p>
+                </div>
+
+                <div class="settings-section">
+                    <h3>🎮 Game Settings</h3>
+                    <div class="setting-item">
+                        <span>🌙 Dark Theme</span>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-theme-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>🔊 Sound Effects</span>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-sound-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>⏱️ Show Timer</span>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-timer-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>🎯 Curveball Questions</span>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-curveball-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>📖 Study Mode (Custom Only)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-study-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span>💖 Infinite Heart</span>
+                        <label class="switch">
+                            <input type="checkbox" id="settings-infinite-heart-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>🗑️ Data Management</h3>
+                    <button id="reset-progress-btn" class="danger-btn">Reset All Progress</button>
+                    <button id="logout-btn" class="secondary-btn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
